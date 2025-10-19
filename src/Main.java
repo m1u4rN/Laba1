@@ -1,17 +1,81 @@
-// Main.java
+import java.util.Scanner;
+
 public class Main {
+    // Чтение неотрицательного целого числа
+    private static int readNonNegativeInt(Scanner in, String prompt) {
+        int value;
+        while (true) {
+            System.out.print(prompt);
+            System.out.flush();
+            String line = in.nextLine().trim();
+
+            if (line.isEmpty()) {
+                System.out.println("Пусто. Введите целое число ≥ 0.");
+                continue;
+            }
+            if (!line.matches("\\d+")) {
+                System.out.println("Ошибка: нужно целое число без знаков.");
+                continue;
+            }
+            try {
+                value = Integer.parseInt(line);
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Слишком большое число (макс 2147483647).");
+            }
+        }
+    }
+
+    // Чтение строки (не пустой)
+    private static String readNonEmptyString(Scanner in, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            System.out.flush();
+            String line = in.nextLine().trim();
+            if (line.isEmpty()) {
+                System.out.println("Пусто. Введите непустое значение.");
+                continue;
+            }
+            return line;
+        }
+    }
+
     public static void main(String[] args) {
-        Hotel h = new Hotel("Sunrise Hotel", 80, 100, 50.0);
+        Scanner in = new Scanner(System.in);
 
-        System.out.println("Гостиница: " + h.getName());
-        System.out.println("Заселено/Всего: " + h.getOccupiedBeds() + "/" + h.getTotalBeds());
-        System.out.println("Свободно мест: " + h.getFreeBeds());
+        Hotel hotel = new Hotel();
 
-        double revenue3days = h.calculateRevenue(3);
-        System.out.println("Выручка за 3 дня: " + revenue3days);
+        // Название
+        String name = readNonEmptyString(in, "Введите название гостиницы: ");
+        hotel.setName(name);
 
-        // Покажем свойство «только для записи»: меняем цену, но прочитать её нельзя
-        h.setPaymentPerDay(60.0);
-        System.out.println("Выручка за 3 дня (после смены цены): " + h.calculateRevenue(3));
+        // Общее число мест
+        int total = readNonNegativeInt(in, "Введите общее число мест (≥ 0): ");
+        hotel.setTotalPlaces(total);
+
+        // Число заселённых мест (должно быть ≤ total)
+        int occupied;
+        while (true) {
+            occupied = readNonNegativeInt(in, "Введите число заселённых мест (0.." + total + "): ");
+            if (occupied > total) {
+                System.out.println("Ошибка: заселённых мест не может быть больше общего числа (" + total + ").");
+                continue;
+            }
+            break;
+        }
+        hotel.setOccupiedPlaces(occupied);
+
+        // Стоимость за день (write-only свойство)
+        int rate = readNonNegativeInt(in, "Введите стоимость проживания за день (руб., ≥ 0): ");
+        hotel.setDailyRate(rate);
+
+        // На сколько дней посчитать выручку
+        int days = readNonNegativeInt(in, "Введите число дней для расчёта общей выручки (≥ 0): ");
+
+        System.out.println();
+        hotel.print();
+        System.out.println("Выручка за " + days + " дн.: " + hotel.computeRevenueForDays(days) + " руб.");
+
+        in.close();
     }
 }

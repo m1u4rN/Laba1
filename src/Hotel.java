@@ -1,48 +1,85 @@
-
 public class Hotel {
-    private String name;          // название гостиницы
-    private int occupiedBeds;     // заселённых мест
-    private int totalBeds;        // всего мест
-    private double paymentPerDay; // оплата за день (write-only свойство)
+    private String name;
+    private int occupiedPlaces;
+    private int totalPlaces;
+    private int dailyRate; // свойство только для записи (нет геттера)
 
-    public Hotel(String name, int occupiedBeds, int totalBeds, double paymentPerDay) {
-        if (name == null || name.trim().isEmpty())
-            throw new IllegalArgumentException("Название гостиницы не может быть пустым.");
-        if (totalBeds < 0)
-            throw new IllegalArgumentException("Общее число мест не может быть отрицательным.");
-        if (occupiedBeds < 0)
-            throw new IllegalArgumentException("Число заселённых не может быть отрицательным.");
-        if (occupiedBeds > totalBeds)
-            throw new IllegalArgumentException("Заселённых больше, чем всего мест.");
-        if (paymentPerDay < 0)
-            throw new IllegalArgumentException("Оплата за день не может быть отрицательной.");
+    public Hotel() { }
 
-        this.name = name;
-        this.occupiedBeds = occupiedBeds;
-        this.totalBeds = totalBeds;
-        this.paymentPerDay = paymentPerDay;
+    public Hotel(String name, int occupiedPlaces, int totalPlaces, int dailyRate) {
+        setName(name);
+        setTotalPlaces(totalPlaces);
+        setOccupiedPlaces(occupiedPlaces);
+        setDailyRate(dailyRate);
     }
 
-    // --- Геттеры (свойства для чтения) ---
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("Ошибка: название гостиницы пустое!");
+            return;
+        }
+        this.name = name.trim();
+    }
+
+    public void setTotalPlaces(int totalPlaces) {
+        if (totalPlaces < 0) {
+            System.out.println("Ошибка: общее число мест не может быть отрицательным");
+            this.totalPlaces = 0;
+            return;
+        }
+        this.totalPlaces = totalPlaces;
+        if (occupiedPlaces > totalPlaces) {
+            System.out.println("Предупреждение: заселённых мест больше, чем всего. Ставлю " + totalPlaces + ".");
+            occupiedPlaces = totalPlaces;
+        }
+    }
+
+    public void setOccupiedPlaces(int occupiedPlaces) {
+        if (occupiedPlaces < 0) {
+            System.out.println("Ошибка: число заселённых мест не может быть отрицательным");
+            this.occupiedPlaces = 0;
+            return;
+        }
+        if (occupiedPlaces > totalPlaces) {
+            System.out.println("Ошибка: заселённых мест не может быть больше общего числа (" + totalPlaces + ")");
+            this.occupiedPlaces = totalPlaces;
+            return;
+        }
+        this.occupiedPlaces = occupiedPlaces;
+    }
+
+    // write-only: геттера нет
+    public void setDailyRate(int dailyRate) {
+        if (dailyRate < 0) {
+            System.out.println("Ошибка: стоимость за день не может быть отрицательной");
+            this.dailyRate = 0;
+            return;
+        }
+        this.dailyRate = dailyRate;
+    }
+
+    // Геттеры для удобства (кроме dailyRate)
     public String getName() { return name; }
-    public int getOccupiedBeds() { return occupiedBeds; }
-    public int getTotalBeds() { return totalBeds; }
+    public int getOccupiedPlaces() { return occupiedPlaces; }
+    public int getTotalPlaces() { return totalPlaces; }
 
-    // Кол-во свободных мест
-    public int getFreeBeds() { return totalBeds - occupiedBeds; }
-
-    // --- Свойство ТОЛЬКО ДЛЯ ЗАПИСИ ---
-    // Нет getPaymentPerDay(), только setter -> write-only
-    public void setPaymentPerDay(double paymentPerDay) {
-        if (paymentPerDay < 0)
-            throw new IllegalArgumentException("Оплата за день не может быть отрицательной.");
-        this.paymentPerDay = paymentPerDay;
+    /** Выручка за 1 день */
+    public long computeDailyRevenue() {
+        return (long) occupiedPlaces * (long) dailyRate;
     }
 
-    // Метод: общая выручка за заданное число дней
-    public double calculateRevenue(int days) {
-        if (days < 0)
-            throw new IllegalArgumentException("Число дней не может быть отрицательным.");
-        return occupiedBeds * paymentPerDay * days;
+    /** Общая выручка за N дней (N ≥ 0) */
+    public long computeRevenueForDays(int days) {
+        if (days < 0) {
+            System.out.println("Ошибка: число дней не может быть отрицательным");
+            return 0L;
+        }
+        return computeDailyRevenue() * (long) days;
+    }
+
+    public void print() {
+        System.out.println("Гостиница: " + name);
+        System.out.println("Заселено: " + occupiedPlaces + " из " + totalPlaces);
+        System.out.println("Выручка за день: " + computeDailyRevenue() + " руб.");
     }
 }
