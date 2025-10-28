@@ -2,7 +2,7 @@ public class Hotel {
     private String name;
     private int occupiedPlaces;
     private int totalPlaces;
-    private int dailyRate; // свойство только для записи (нет геттера)
+    private int dailyRate;
 
     public Hotel() { }
 
@@ -48,7 +48,6 @@ public class Hotel {
         this.occupiedPlaces = occupiedPlaces;
     }
 
-    // write-only: геттера нет
     public void setDailyRate(int dailyRate) {
         if (dailyRate < 0) {
             System.out.println("Ошибка: стоимость за день не может быть отрицательной");
@@ -58,17 +57,14 @@ public class Hotel {
         this.dailyRate = dailyRate;
     }
 
-    // Геттеры для удобства (кроме dailyRate)
     public String getName() { return name; }
     public int getOccupiedPlaces() { return occupiedPlaces; }
     public int getTotalPlaces() { return totalPlaces; }
 
-    /** Выручка за 1 день */
     public long computeDailyRevenue() {
         return (long) occupiedPlaces * (long) dailyRate;
     }
 
-    /** Общая выручка за N дней (N ≥ 0) */
     public long computeRevenueForDays(int days) {
         if (days < 0) {
             System.out.println("Ошибка: число дней не может быть отрицательным");

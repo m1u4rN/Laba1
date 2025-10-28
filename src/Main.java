@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 public class Main {
-    // Чтение неотрицательного целого числа
     private static int readNonNegativeInt(Scanner in, String prompt) {
         int value;
         while (true) {
@@ -26,7 +25,6 @@ public class Main {
         }
     }
 
-    // Чтение строки (не пустой)
     private static String readNonEmptyString(Scanner in, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -45,15 +43,12 @@ public class Main {
 
         Hotel hotel = new Hotel();
 
-        // Название
         String name = readNonEmptyString(in, "Введите название гостиницы: ");
         hotel.setName(name);
 
-        // Общее число мест
         int total = readNonNegativeInt(in, "Введите общее число мест (≥ 0): ");
         hotel.setTotalPlaces(total);
 
-        // Число заселённых мест (должно быть ≤ total)
         int occupied;
         while (true) {
             occupied = readNonNegativeInt(in, "Введите число заселённых мест (0.." + total + "): ");
@@ -65,11 +60,9 @@ public class Main {
         }
         hotel.setOccupiedPlaces(occupied);
 
-        // Стоимость за день (write-only свойство)
         int rate = readNonNegativeInt(in, "Введите стоимость проживания за день (руб., ≥ 0): ");
         hotel.setDailyRate(rate);
 
-        // На сколько дней посчитать выручку
         int days = readNonNegativeInt(in, "Введите число дней для расчёта общей выручки (≥ 0): ");
 
         System.out.println();
