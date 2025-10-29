@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class Main {
+
+    // Чтение целого числа >= 0
     private static int readNonNegativeInt(Scanner in, String prompt) {
         int value;
         while (true) {
@@ -25,15 +27,27 @@ public class Main {
         }
     }
 
-    private static String readNonEmptyString(Scanner in, String prompt) {
+    // Чтение названия гостиницы:
+    // - не пусто
+    // - только буквы и пробелы
+    private static String readHotelName(Scanner in, String prompt) {
         while (true) {
             System.out.print(prompt);
             System.out.flush();
             String line = in.nextLine().trim();
+
             if (line.isEmpty()) {
                 System.out.println("Пусто. Введите непустое значение.");
                 continue;
             }
+
+            // \p{L} = любая буква (русская, английская и т.д.)
+            // Разрешаем буквы и пробелы.
+            if (!line.matches("[\\p{L}\\s]+")) {
+                System.out.println("Ошибка: название должно состоять только из букв (и пробелов).");
+                continue;
+            }
+
             return line;
         }
     }
@@ -43,12 +57,15 @@ public class Main {
 
         Hotel hotel = new Hotel();
 
-        String name = readNonEmptyString(in, "Введите название гостиницы: ");
+        // Название гостиницы
+        String name = readHotelName(in, "Введите название гостиницы: ");
         hotel.setName(name);
 
+        // Общее число мест
         int total = readNonNegativeInt(in, "Введите общее число мест (≥ 0): ");
         hotel.setTotalPlaces(total);
 
+        // Заселённые места (не больше total)
         int occupied;
         while (true) {
             occupied = readNonNegativeInt(in, "Введите число заселённых мест (0.." + total + "): ");
@@ -60,9 +77,11 @@ public class Main {
         }
         hotel.setOccupiedPlaces(occupied);
 
+        // Стоимость за день
         int rate = readNonNegativeInt(in, "Введите стоимость проживания за день (руб., ≥ 0): ");
         hotel.setDailyRate(rate);
 
+        // Число дней для расчёта выручки
         int days = readNonNegativeInt(in, "Введите число дней для расчёта общей выручки (≥ 0): ");
 
         System.out.println();

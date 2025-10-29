@@ -14,11 +14,24 @@ public class Hotel {
     }
 
     public void setName(String name) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null) {
             System.out.println("Ошибка: название гостиницы пустое!");
             return;
         }
-        this.name = name.trim();
+
+        String trimmed = name.trim();
+        if (trimmed.isEmpty()) {
+            System.out.println("Ошибка: название гостиницы пустое!");
+            return;
+        }
+
+        // Проверка: только буквы и пробелы
+        if (!trimmed.matches("[\\p{L}\\s]+")) {
+            System.out.println("Ошибка: название гостиницы должно содержать только буквы (и пробелы).");
+            return;
+        }
+
+        this.name = trimmed;
     }
 
     public void setTotalPlaces(int totalPlaces) {
@@ -57,9 +70,17 @@ public class Hotel {
         this.dailyRate = dailyRate;
     }
 
-    public String getName() { return name; }
-    public int getOccupiedPlaces() { return occupiedPlaces; }
-    public int getTotalPlaces() { return totalPlaces; }
+    public String getName() {
+        return name;
+    }
+
+    public int getOccupiedPlaces() {
+        return occupiedPlaces;
+    }
+
+    public int getTotalPlaces() {
+        return totalPlaces;
+    }
 
     public long computeDailyRevenue() {
         return (long) occupiedPlaces * (long) dailyRate;
